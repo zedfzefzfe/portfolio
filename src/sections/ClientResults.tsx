@@ -52,7 +52,7 @@ const cards: CardData[] = [
 // Repeat cards to fill viewport before duplicating for seamless loop
 const track = [...cards, ...cards, ...cards, ...cards];
 
-function PolaroidCard({ card, uid }: { card: CardData; uid: string }) {
+function PolaroidCard({ card }: { card: CardData }) {
   return (
     <div
       className="cr-card-wrap"
@@ -453,11 +453,11 @@ export function ClientResults() {
         <div className="cr-marquee-inner">
           {/* Original set */}
           {track.map((card, i) => (
-            <PolaroidCard key={`a-${i}`} card={card} uid={`a-${i}`} />
+            <PolaroidCard key={`a-${i}`} card={card} />
           ))}
           {/* Duplicate set for seamless loop */}
           {track.map((card, i) => (
-            <PolaroidCard key={`b-${i}`} card={card} uid={`b-${i}`} />
+            <PolaroidCard key={`b-${i}`} card={card} />
           ))}
         </div>
       </div>
