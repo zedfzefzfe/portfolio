@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #111111;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@layer utilities {
+  .hero-title {
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+
+  .font-display {
+    font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  }
+}
+
+/* Masolide Design System */
+:root {
+  --bg-primary: #111111;
+  --bg-secondary: #161616;
+  --bg-card: #1A1A1A;
+  --bg-light: #E8E4DF;
+  --accent: #C4591A;
+  --accent-hover: #A84A15;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+/* Typography */
+.font-display {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.text-display-massive {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(4rem, 15vw, 16rem);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+}
+
+.text-display-large {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 10vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+}
+
+.text-display-medium {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(2rem, 5vw, 5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.text-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* Container */
+.container-site {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-site {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-site {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+/* Input styles */
+.input-masolide {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-masolide:focus {
+  border-color: var(--accent);
+}
+
+.input-masolide::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  animation: ticker-scroll 20s linear infinite;
+}
+
+@keyframes rotate-text {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate-slow {
+  animation: rotate-text 20s linear infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
