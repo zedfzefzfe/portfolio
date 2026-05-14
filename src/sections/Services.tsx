@@ -107,7 +107,7 @@ export function Services() {
           overflow: hidden;
         }
         @media (min-width: 1024px) {
-          .s-header { padding: 80px 48px 60px; }
+          .s-header { padding: 150px 48px 60px; }
         }
 
         .s-header::before {
@@ -144,6 +144,38 @@ export function Services() {
           margin: 24px 0 0;
           position: relative;
           z-index: 1;
+        }
+
+        /* ── Desktop header footer ─────────────────────────── */
+        .s-header-footer {
+          display: none;
+        }
+        @media (min-width: 1024px) {
+          .s-header-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 52px;
+          }
+        }
+
+        .s-header-desc {
+          font-family: 'Inter', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          line-height: 1.85;
+          color: var(--text);
+          max-width: 400px;
+          margin: 0;
+        }
+
+        .s-arrow-wrap {
+          flex-shrink: 0;
+          color: var(--text);
+          margin-right: -8px;
+          margin-bottom: -8px;
         }
 
         /* ── Desktop stack ──────────────────────────────────── */
@@ -183,6 +215,7 @@ export function Services() {
           text-align: left;
           font-family: inherit;
           appearance: none;
+          overflow: hidden;
         }
 
         .s-card + .s-card { margin-left: -85px; }
@@ -243,17 +276,9 @@ export function Services() {
           display: flex;
           flex-direction: column;
           margin-top: auto;
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0ms, transform 0ms;
           pointer-events: none;
         }
         .s-card[data-active="true"] .s-extras {
-          opacity: 1;
-          transform: translateY(0);
-          transition:
-            opacity 400ms cubic-bezier(0.22, 1, 0.36, 1) 200ms,
-            transform 500ms cubic-bezier(0.22, 1, 0.36, 1) 200ms;
           pointer-events: auto;
         }
 
@@ -262,9 +287,11 @@ export function Services() {
           font-weight: 400;
           font-size: 14px;
           line-height: 1.6;
-          color: var(--muted-dark);
+          color: rgba(239, 234, 224, 0.6);
           margin: 0 0 28px;
+          transition: color 500ms cubic-bezier(0.22, 1, 0.36, 1);
         }
+        .s-card[data-active="true"] .s-desc { color: rgba(26, 26, 26, 0.65); }
 
         .s-cta {
           display: inline-flex;
@@ -283,9 +310,17 @@ export function Services() {
           text-transform: uppercase;
           text-decoration: none;
           cursor: pointer;
+          opacity: 0;
+          transform: translateY(6px);
           transition:
+            opacity 400ms cubic-bezier(0.22, 1, 0.36, 1) 150ms,
+            transform 400ms cubic-bezier(0.22, 1, 0.36, 1) 150ms,
             background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
             color 400ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .s-card[data-active="true"] .s-cta {
+          opacity: 1;
+          transform: translateY(0);
         }
         .s-cta:hover { background: var(--ink); color: var(--text); }
         .s-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
@@ -380,8 +415,25 @@ export function Services() {
 
       {/* ── Header ───────────────────────────────────────── */}
       <div className="s-header">
-        <span className="s-eyebrow">NOS SERVICES</span>
-        <h2 className="s-headline">NOS SERVICES DIGITAUX AU MAROC.</h2>
+        <span className="s-eyebrow">NOTRE EXPERTISE</span>
+        <h2 className="s-headline">NOS SERVICES<br/>DIGITAUX AU MAROC.</h2>
+
+        {/* Desktop-only: description + arrow */}
+        <div className="s-header-footer">
+          <p className="s-header-desc">
+            DES SOLUTIONS DIGITALES COMPLÈTES,<br/>
+            CONÇUES POUR BÂTIR UNE PRÉSENCE<br/>
+            EN LIGNE SOLIDE ET GÉNÉRER DES<br/>
+            RÉSULTATS MESURABLES.
+          </p>
+          <div className="s-arrow-wrap" aria-hidden="true">
+            <svg width="170" height="170" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="82" y1="18" x2="20" y2="80" stroke="currentColor" strokeWidth="9" strokeLinecap="square"/>
+              <line x1="20" y1="80" x2="20" y2="46" stroke="currentColor" strokeWidth="9" strokeLinecap="square"/>
+              <line x1="20" y1="80" x2="54" y2="80" stroke="currentColor" strokeWidth="9" strokeLinecap="square"/>
+            </svg>
+          </div>
+        </div>
       </div>
 
       {/* ── Desktop stack ─────────────────────────────────── */}

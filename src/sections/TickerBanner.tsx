@@ -1,26 +1,30 @@
 export function TickerBanner() {
-  const items = Array.from({ length: 8 }, () => "OFFRE LIMITÉE : DEMANDEZ UN DEVIS GRATUIT AUJOURD'HUI");
+  const items = Array.from({ length: 8 }, () => ({
+    label: "OFFRE LIMITÉE :",
+    text: "DEMANDEZ UN DEVIS GRATUIT AUJOURD'HUI",
+  }));
+
+  const time = `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}`;
 
   return (
-    <section className="relative overflow-hidden py-3" style={{ backgroundColor: '#111111' }}>
+    <section
+      className="relative overflow-hidden py-2.5 border-b"
+      style={{ backgroundColor: '#0e0e0e', borderColor: 'rgba(255,255,255,0.08)' }}
+    >
       <div className="flex animate-ticker whitespace-nowrap">
-        {items.map((text, i) => (
-          <span key={i} className="flex items-center gap-4 mx-4 shrink-0">
-            <span className="text-sm font-medium tracking-wide" style={{ color: '#C4591A' }}>
-              {text}
+        {[...items, ...items].map((item, i) => (
+          <span key={i} className="flex items-center gap-3 mx-6 shrink-0">
+            <span className="text-xs font-bold tracking-widest" style={{ color: '#C4591A' }}>
+              {item.label}
             </span>
-            <span className="text-xs px-2 py-1 rounded font-mono" style={{ backgroundColor: 'rgba(196, 89, 26, 0.15)', color: '#C4591A' }}>
-              {new Date().getHours().toString().padStart(2, '0')}:{new Date().getMinutes().toString().padStart(2, '0')}
+            <span className="text-xs font-medium tracking-widest text-white">
+              {item.text}
             </span>
-          </span>
-        ))}
-        {items.map((text, i) => (
-          <span key={`dup-${i}`} className="flex items-center gap-4 mx-4 shrink-0">
-            <span className="text-sm font-medium tracking-wide" style={{ color: '#C4591A' }}>
-              {text}
-            </span>
-            <span className="text-xs px-2 py-1 rounded font-mono" style={{ backgroundColor: 'rgba(196, 89, 26, 0.15)', color: '#C4591A' }}>
-              {new Date().getHours().toString().padStart(2, '0')}:{new Date().getMinutes().toString().padStart(2, '0')}
+            <span
+              className="text-xs px-2 py-0.5 rounded font-mono font-semibold text-white"
+              style={{ backgroundColor: '#C4591A' }}
+            >
+              {time}
             </span>
           </span>
         ))}
