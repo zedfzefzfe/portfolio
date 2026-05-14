@@ -5,6 +5,7 @@ import { About } from '@/sections/About'
 import { AngledMarquee } from '@/sections/AngledMarquee'
 import { Services } from '@/sections/Services'
 import { Portfolio } from '@/sections/Portfolio'
+import { ClientResults } from '@/sections/ClientResults'
 import { Technologies } from '@/sections/Technologies'
 import { Contact } from '@/sections/Contact'
 import { Footer } from '@/sections/Footer'
@@ -29,6 +30,7 @@ export default function Home() {
       <AngledMarquee />
       <Services />
       <Portfolio />
+      <ClientResults />
       <Technologies />
       <Contact />
       <Footer />
