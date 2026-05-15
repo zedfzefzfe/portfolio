@@ -97,7 +97,7 @@ export function About() {
           <div className="lg:col-span-4 flex flex-col gap-8">
             <div className="about-img relative overflow-hidden rounded-2xl" style={{ aspectRatio: '3/4' }}>
               <img
-                src="/images/about-1.jpg"
+                src="/cf5770d3e519eb719715bedc909042d2.png"
                 alt="Lumia Technologie"
                 className="w-full h-full object-cover"
                 loading="lazy"

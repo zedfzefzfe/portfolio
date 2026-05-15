@@ -197,13 +197,13 @@ export function ClientResults() {
 
         /* ── Section header ───────────────────────────────── */
         .cr-hero {
-          padding: 80px 24px 56px;
+          padding: 80px 24px 64px;
         }
-        @media (min-width: 768px) { .cr-hero { padding: 96px 48px 64px; } }
+        @media (min-width: 768px) { .cr-hero { padding: 96px 48px 72px; } }
 
         .cr-eyebrow {
           display: inline-block;
-          font-family: 'Barlow', 'Inter', sans-serif;
+          font-family: 'Inter', sans-serif;
           font-weight: 500;
           font-size: 12px;
           letter-spacing: 0.18em;
@@ -211,23 +211,24 @@ export function ClientResults() {
           color: #EFEAE0;
         }
         .cr-headline {
-          font-family: 'Anton', 'Barlow Condensed', Impact, sans-serif;
+          font-family: 'Anton', 'Oswald', Impact, sans-serif;
           font-weight: 400;
-          font-size: clamp(56px, 11vw, 160px);
+          font-size: clamp(48px, 9vw, 140px);
           line-height: 0.9;
           letter-spacing: -0.02em;
           text-transform: uppercase;
           color: #EFEAE0;
-          margin: 24px 0 28px;
+          margin: 24px 0 32px;
         }
         .cr-subline {
-          font-family: 'Barlow', 'Inter', sans-serif;
-          font-weight: 300;
+          font-family: 'Inter', sans-serif;
+          font-weight: 400;
           font-size: 13px;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: rgba(239,234,224,0.55);
-          font-style: italic;
+          color: rgba(239,234,224,0.65);
+          max-width: 480px;
+          line-height: 1.7;
         }
 
         /* ── Marquee ──────────────────────────────────────── */
@@ -253,7 +254,7 @@ export function ClientResults() {
         .cr-card-wrap {
           position: relative;
           flex-shrink: 0;
-          width: 300px;
+          width: 400px;
         }
         @media (max-width: 767px) { .cr-card-wrap { width: 260px; } }
 
@@ -432,6 +433,27 @@ export function ClientResults() {
         /* ── Dividers ─────────────────────────────────────── */
         .cr-top-divider { height: 1px; background: rgba(255,255,255,0.08); }
 
+        /* ── Desktop-only size scale-up ──────────────────── */
+        @media (min-width: 768px) {
+          .cr-browser-bar { padding: 9px 14px; }
+          .cr-dot { width: 9px; height: 9px; }
+          .cr-url-bar { font-size: 11px; padding: 3px 12px; }
+          .cr-screen-header { padding: 13px 16px 7px; gap: 3px; }
+          .cr-client-name { font-size: 17px; }
+          .cr-period { font-size: 11px; }
+          .cr-divider { margin: 0 16px 8px; }
+          .cr-table th { font-size: 9.5px; padding: 5px 16px; }
+          .cr-table td { font-size: 12px; padding: 6px 16px; }
+          .cr-totals { gap: 7px; margin: 12px 16px 0; }
+          .cr-total-box { padding: 9px 6px; }
+          .cr-total-value { font-size: 20px; }
+          .cr-total-label { font-size: 9px; margin-top: 4px; }
+          .cr-screen { padding-bottom: 16px; }
+          .cr-footer { padding: 10px 10px 12px; }
+          .cr-logo { font-size: 22px; }
+          .cr-footer-label { font-size: 10px; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .cr-marquee-inner { animation: none; }
         }
@@ -443,9 +465,9 @@ export function ClientResults() {
       <div className="cr-hero">
         <span className="cr-eyebrow">NOS RÉSULTATS</span>
         <h2 className="cr-headline">
-          RÉSULTATS CLIENTS<br />META ADS.
+          ON NE PROMET PAS,<br />ON PROUVE.
         </h2>
-        <p className="cr-subline">Des campagnes rentables, des chiffres réels.</p>
+        <p className="cr-subline">Des campagnes Meta Ads rentables — des chiffres réels, des clients réels.</p>
       </div>
 
       {/* ── Auto-scrolling cards ── */}

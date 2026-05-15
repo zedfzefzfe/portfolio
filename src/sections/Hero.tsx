@@ -29,30 +29,10 @@ export function Hero() {
 
         {/* Center pill — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1 bg-neutral-900/90 backdrop-blur rounded-full px-3 py-2">
-          <a
-            href="#"
-            className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full"
-          >
-            platform
-          </a>
-          <a
-            href="#"
-            className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full"
-          >
-            solutions
-          </a>
-          <a
-            href="#"
-            className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full"
-          >
-            company
-          </a>
-          <a
-            href="#"
-            className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full"
-          >
-            support
-          </a>
+          <a href="#" className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full">platform</a>
+          <a href="#" className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full">solutions</a>
+          <a href="#" className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full">company</a>
+          <a href="#" className="text-neutral-300 hover:text-white transition-colors text-sm px-5 py-2 rounded-full">support</a>
         </div>
 
         {/* Right button */}
