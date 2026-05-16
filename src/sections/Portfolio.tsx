@@ -17,17 +17,13 @@
 import { useEffect, useRef } from 'react';
 
 const projects = [
-  { name: 'PURETOI',        img: '/projects/puretoi.jpg',     url: '#' },
-  { name: 'MOMENTUM WATCH', img: '/projects/momentum.jpg',    url: '#' },
-  { name: 'AWRESTAURANTS',  img: '/projects/aw.jpg',          url: '#' },
-  { name: 'HUNGRY TIGER',   img: '/projects/hungrytiger.jpg', url: '#' },
-  { name: 'STUDIO BO',      img: '/projects/studiobo.jpg',    url: '#' },
-  { name: 'LA',             img: '/projects/la.jpg',          url: '#' },
+  { name: 'PURETOI',        img: '/1.png', url: '#' },
+  { name: 'MOMENTUM WATCH', img: '/2.png', url: '#' },
+  { name: 'AWRESTAURANTS',  img: '/3.png', url: '#' },
+  { name: 'HUNGRY TIGER',   img: '/4.png', url: '#' },
+  { name: 'STUDIO BO',      img: '/5.png', url: '#' },
+  { name: 'LA',             img: '/1.png', url: '#' },
 ];
-
-// TODO: replace with real project screenshots
-const placeholderFor = (name: string) =>
-  `https://picsum.photos/seed/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}/800/1000`;
 
 export function Portfolio() {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -367,7 +363,7 @@ export function Portfolio() {
           >
             <div className="r-card-img-wrap">
               <img
-                src={placeholderFor(p.name) /* TODO: replace with real project screenshots → p.img */}
+                src={p.img}
                 alt={`Aperçu du projet ${p.name}`}
                 className="r-card-img"
                 loading="lazy"
