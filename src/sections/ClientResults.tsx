@@ -136,7 +136,7 @@ function PolaroidCard({ card }: { card: CardData }) {
 
         {/* Polaroid footer */}
         <div className="cr-footer">
-          <span className="cr-logo">Lumia<span className="cr-logo-dot">.</span></span>
+          <span className="cr-logo">DEV-MAROC<span className="cr-logo-dot">.</span></span>
           <span className="cr-footer-label">résultat client · meta ads</span>
         </div>
 

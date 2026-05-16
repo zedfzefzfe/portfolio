@@ -358,6 +358,12 @@ export function Portfolio() {
             href={p.url}
             className="r-card"
             aria-label={`Voir le projet ${p.name}`}
+            onClick={(e) => {
+              e.preventDefault();
+              window.dispatchEvent(
+                new CustomEvent('devmaroc:navigate', { detail: { url: p.url } })
+              );
+            }}
           >
             <div className="r-card-img-wrap">
               <img

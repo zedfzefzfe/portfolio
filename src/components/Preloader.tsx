@@ -1,25 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+type State =
+  | { phase: 'initial' }
+  | { phase: 'idle' }
+  | { phase: 'navigating'; url: string };
 
 export function Preloader() {
-  const [done, setDone] = useState(false);
-  const [visible, setVisible] = useState(false); // content fade-in
-  const [exiting, setExiting] = useState(false); // curtain split
+  const [state, setState] = useState<State>({ phase: 'initial' });
+  const [contentVisible, setContentVisible] = useState(false);
+  const [curtainsMoved, setCurtainsMoved] = useState(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
+  // ── Initial load animation ────────────────────────────────
   useEffect(() => {
-    // Lock body scroll
+    if (state.phase !== 'initial') return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Tiny delay so initial (hidden) state can paint before transitioning.
-    const t1 = window.setTimeout(() => setVisible(true), 50);
-
-    // Fade-in 0.8s + hold 1.2s = 2.0s → start curtain split.
-    const t2 = window.setTimeout(() => setExiting(true), 2050);
-
-    // After curtain split (1.0s) → unmount.
+    const t1 = window.setTimeout(() => setContentVisible(true), 50);
+    const t2 = window.setTimeout(() => {
+      setContentVisible(false);
+      setCurtainsMoved(true); // curtains open out
+    }, 2050);
     const t3 = window.setTimeout(() => {
       document.body.style.overflow = prevOverflow;
-      setDone(true);
+      setContentVisible(false);
+      setCurtainsMoved(false);
+      setState({ phase: 'idle' });
     }, 3100);
 
     return () => {
@@ -28,12 +36,56 @@ export function Preloader() {
       window.clearTimeout(t3);
       document.body.style.overflow = prevOverflow;
     };
+  }, [state.phase]);
+
+  // ── Listen for navigation requests ────────────────────────
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if (stateRef.current.phase !== 'idle') return;
+      const url = (e as CustomEvent<{ url: string }>).detail?.url;
+      if (typeof url !== 'string' || !url) return;
+      // Reset to start of navigation animation
+      setContentVisible(false);
+      setCurtainsMoved(false); // curtains begin off-screen (mode swaps the default)
+      setState({ phase: 'navigating', url });
+    };
+    window.addEventListener('devmaroc:navigate', handler as EventListener);
+    return () => window.removeEventListener('devmaroc:navigate', handler as EventListener);
   }, []);
 
-  if (done) return null;
+  // ── Navigation animation ──────────────────────────────────
+  useEffect(() => {
+    if (state.phase !== 'navigating') return;
+    document.body.style.overflow = 'hidden';
+
+    // Wait two frames so the off-screen starting position paints first,
+    // then trigger the transition by setting curtainsMoved=true.
+    let raf2 = 0;
+    const raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(() => setCurtainsMoved(true));
+    });
+
+    // After curtains close (~0.6s) → fade in logo
+    const t1 = window.setTimeout(() => setContentVisible(true), 620);
+    // Hold then navigate (curtain 0.6 + fade 0.3 + hold 0.5 = ~1.4s)
+    const t2 = window.setTimeout(() => {
+      window.location.href = state.url;
+    }, 1500);
+
+    return () => {
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [state]);
+
+  if (state.phase === 'idle') return null;
+
+  const mode = state.phase === 'initial' ? 'initial' : 'navigating';
 
   return (
-    <div className="preloader-root" aria-hidden="true">
+    <div className="preloader-root" data-mode={mode} aria-hidden="true">
       <style>{`
         .preloader-root {
           position: fixed;
@@ -50,17 +102,34 @@ export function Preloader() {
           background: #0d0d0d;
           pointer-events: auto;
           will-change: transform;
-          transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
         }
         .preloader-curtain.top    { top: 0; }
         .preloader-curtain.bottom { bottom: 0; }
-        .preloader-curtain.top.exit    { transform: translateY(-100%); }
-        .preloader-curtain.bottom.exit { transform: translateY(100%); }
+
+        /* ── Mode: initial ─── start at center, .moved opens them out ─── */
+        .preloader-root[data-mode="initial"] .preloader-curtain {
+          transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .preloader-root[data-mode="initial"] .preloader-curtain.top    { transform: translateY(0); }
+        .preloader-root[data-mode="initial"] .preloader-curtain.bottom { transform: translateY(0); }
+        .preloader-root[data-mode="initial"] .preloader-curtain.top.moved    { transform: translateY(-100%); }
+        .preloader-root[data-mode="initial"] .preloader-curtain.bottom.moved { transform: translateY(100%); }
+
+        /* ── Mode: navigating ─── start off-screen, .moved closes them in ─── */
+        .preloader-root[data-mode="navigating"] .preloader-curtain {
+          transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .preloader-root[data-mode="navigating"] .preloader-curtain.top    { transform: translateY(-100%); }
+        .preloader-root[data-mode="navigating"] .preloader-curtain.bottom { transform: translateY(100%); }
+        .preloader-root[data-mode="navigating"] .preloader-curtain.top.moved    { transform: translateY(0); }
+        .preloader-root[data-mode="navigating"] .preloader-curtain.bottom.moved { transform: translateY(0); }
 
         @media (max-width: 767px) {
-          .preloader-curtain { transition-duration: 0.7s; }
+          .preloader-root[data-mode="initial"] .preloader-curtain { transition-duration: 0.7s; }
+          .preloader-root[data-mode="navigating"] .preloader-curtain { transition-duration: 0.45s; }
         }
 
+        /* ── Centered content ────────────────────────────────────────── */
         .preloader-content {
           position: absolute;
           top: 50%;
@@ -80,9 +149,10 @@ export function Preloader() {
           opacity: 1;
           transform: translate(-50%, -50%) scale(1);
         }
-        .preloader-content.exit {
-          opacity: 0;
-          transition: opacity 0.4s ease-out;
+        .preloader-root[data-mode="navigating"] .preloader-content {
+          transition:
+            opacity 0.4s ease-out,
+            transform 0.4s ease-out;
         }
 
         .preloader-label {
@@ -101,8 +171,7 @@ export function Preloader() {
           font-size: 80px;
           line-height: 1;
           letter-spacing: -0.02em;
-          color: #ffffff;
-          text-transform: lowercase;
+          color: #f5f0e8;
         }
         .preloader-dot { color: #e85d26; }
 
@@ -114,20 +183,24 @@ export function Preloader() {
         .preloader-bar-track {
           width: 200px;
           height: 1px;
-          background: #2a2a2a;
+          background: #222;
           margin-top: 36px;
           overflow: hidden;
         }
         .preloader-bar-fill {
           height: 100%;
           width: 0;
-          background: #f5f0e8;
+          background: #e85d26;
         }
-        /* Bar fills only during the hold phase: starts after fade-in (~0.8s
-           after .visible is added) and runs for the 1.2s hold. */
-        .preloader-content.visible .preloader-bar-fill {
+        /* Bar fills only during initial-mode hold phase */
+        .preloader-root[data-mode="initial"] .preloader-content.visible .preloader-bar-fill {
           animation: preloader-bar-fill 1.2s linear 0.75s forwards;
         }
+        /* Hide the bar entirely in navigating mode */
+        .preloader-root[data-mode="navigating"] .preloader-bar-track {
+          display: none;
+        }
+
         @keyframes preloader-bar-fill {
           from { width: 0;    }
           to   { width: 100%; }
@@ -140,13 +213,13 @@ export function Preloader() {
         }
       `}</style>
 
-      <div className={`preloader-curtain top ${exiting ? 'exit' : ''}`} />
-      <div className={`preloader-curtain bottom ${exiting ? 'exit' : ''}`} />
+      <div className={`preloader-curtain top ${curtainsMoved ? 'moved' : ''}`} />
+      <div className={`preloader-curtain bottom ${curtainsMoved ? 'moved' : ''}`} />
 
-      <div className={`preloader-content ${visible ? 'visible' : ''} ${exiting ? 'exit' : ''}`}>
+      <div className={`preloader-content ${contentVisible ? 'visible' : ''}`}>
         <div className="preloader-label">BÂTISSEURS DU DIGITAL</div>
         <div className="preloader-logo">
-          Lumia<span className="preloader-dot">.</span>
+          DEV-MAROC<span className="preloader-dot">.</span>
         </div>
         <div className="preloader-bar-track">
           <div className="preloader-bar-fill" />

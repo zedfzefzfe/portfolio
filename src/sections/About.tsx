@@ -98,7 +98,7 @@ export function About() {
             <div className="about-img relative overflow-hidden rounded-2xl" style={{ aspectRatio: '3/4' }}>
               <img
                 src="/cf5770d3e519eb719715bedc909042d2.png"
-                alt="Lumia Technologie"
+                alt="DEV-MAROC"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />

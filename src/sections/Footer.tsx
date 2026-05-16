@@ -9,9 +9,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-16">
           {/* Logo */}
           <div>
-            <span className="font-display text-white block mb-4" style={{ fontSize: '2rem' }}>Lumia</span>
+            <span className="font-display text-white block mb-4" style={{ fontSize: '2rem' }}>DEV-MAROC</span>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              © 2026 Lumia Technologie<br />Tous Droits Réservés
+              © 2026 DEV-MAROC<br />Tous Droits Réservés
             </p>
           </div>
 
@@ -33,8 +33,8 @@ export function Footer() {
           <div>
             <span className="font-display text-white block mb-6" style={{ fontSize: '1.5rem' }}>CONTACT</span>
             <div className="space-y-3">
-              <a href="mailto:contact@lumiatechnologie.com" className="text-sm block transition-opacity duration-300 hover:opacity-70" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                CONTACT@LUMIATECHNOLOGIE.COM
+              <a href="mailto:contact@dev-maroc.com" className="text-sm block transition-opacity duration-300 hover:opacity-70" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                CONTACT@DEV-MAROC.COM
               </a>
               <a href="tel:+212600000000" className="text-sm block transition-opacity duration-300 hover:opacity-70" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 +212 6 00 00 00 00
