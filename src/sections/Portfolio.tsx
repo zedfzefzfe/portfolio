@@ -16,13 +16,41 @@
 
 import { useEffect, useRef } from 'react';
 
-const projects = [
-  { name: 'PURETOI',        img: '/1.png', url: '#' },
-  { name: 'MOMENTUM WATCH', img: '/2.png', url: '#' },
-  { name: 'AWRESTAURANTS',  img: '/3.png', url: '#' },
-  { name: 'HUNGRY TIGER',   img: '/4.png', url: '#' },
-  { name: 'STUDIO BO',      img: '/5.png', url: '#' },
-  { name: 'LA',             img: '/1.png', url: '#' },
+type CardSize = 'hero' | 'tall' | 'standard' | 'wide' | 'wide-sm';
+
+type Project = {
+  title: string;
+  category: string;
+  image: string;
+  url: string;
+  size?: CardSize;
+};
+
+// Bento rhythm repeats every 7 items so the layout cycles gracefully
+// for any number of projects:
+//   row A: hero (8c×2r) + tall (4c×2r)
+//   row B: 3 standards (4c each)
+//   row C: wide (7c) + wide-sm (5c)
+const SIZE_CYCLE: CardSize[] = [
+  'hero',
+  'tall',
+  'standard',
+  'standard',
+  'standard',
+  'wide',
+  'wide-sm',
+];
+
+const sizeAt = (i: number, explicit?: CardSize): CardSize =>
+  explicit ?? SIZE_CYCLE[i % SIZE_CYCLE.length];
+
+const projects: Project[] = [
+  { title: 'ZETHNIKA',        category: 'E-COMMERCE · COSMÉTIQUE · 2025',  image: '/1.png', url: 'https://www.zethnika.com/', size: 'hero' },
+  { title: 'ALAA PARFUM', category: 'SHOPIFY · E-COMMERCE · 2025',     image: '/2.png', url: 'https://finale-delta-ten.vercel.app/', size: 'tall' },
+  { title: 'Royal Beverage',  category: 'SITE VITRINE · LUXE · 2025',      image: '/3.png', url: 'https://royalbev.com/', size: 'standard' },
+  { title: 'Tilesuite',   category: 'BRANDING · RESTAURANT · 2025',    image: '/4.png', url: 'https://www.tilesuite.lu/en', size: 'standard' },
+  { title: 'OUADDI LIVING',      category: 'PORTFOLIO · CRÉATIF · 2025',      image: '/5.png', url: 'https://ouaddiliving.com/', size: 'standard' },
+  { title: 'BTOUCH INDUSTRY',             category: 'IDENTITÉ · CULTURE · 2025',       image: '/6.png', url: 'https://www.btouchindustry.ma/', size: 'wide' },
 ];
 
 export function Portfolio() {
@@ -173,28 +201,80 @@ export function Portfolio() {
           pointer-events: none;
         }
 
-        /* ── Grid ─────────────────────────────────────────── */
+        /* ── Bento Grid ───────────────────────────────────── */
         .r-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 0;
+          gap: 6px;
           width: 100%;
+          max-width: 100%;
+          padding: 24px 16px 56px;
+          box-sizing: border-box;
+          margin: 0 auto;
         }
-        @media (min-width: 640px) { .r-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .r-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) {
+          .r-grid {
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 32px 32px 72px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .r-grid {
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: minmax(260px, auto);
+            gap: 10px;
+            max-width: 90vw;
+            padding: 40px 0 96px;
+          }
+        }
 
         .r-card {
           position: relative;
           display: block;
-          aspect-ratio: 4 / 5;
           overflow: hidden;
           background: #1a1a1a;
           color: inherit;
           text-decoration: none;
-          border: 0;
+          border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 0;
           margin: 0;
           isolation: isolate;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+          transition: border-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                      box-shadow   500ms cubic-bezier(0.22, 1, 0.36, 1);
+          min-height: 320px;
+        }
+
+        /* Mobile — alternate min-heights for rhythm */
+        .r-card.is-hero      { min-height: 380px; }
+        .r-card.is-tall      { min-height: 460px; }
+        .r-card.is-standard  { min-height: 460px; }
+        .r-card.is-wide      { min-height: 300px; }
+        .r-card.is-wide-sm   { min-height: 360px; }
+
+        /* Tablet — 6-col grid, hero takes full width */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .r-card.is-hero     { grid-column: span 6; min-height: 460px; }
+          .r-card.is-tall     { grid-column: span 3; min-height: 420px; }
+          .r-card.is-standard { grid-column: span 3; min-height: 420px; }
+          .r-card.is-wide     { grid-column: span 4; min-height: 320px; }
+          .r-card.is-wide-sm  { grid-column: span 2; min-height: 320px; }
+        }
+
+        /* Desktop — full 12-col bento */
+        @media (min-width: 1024px) {
+          .r-card { min-height: 0; }
+          .r-card.is-hero     { grid-column: span 8; grid-row: span 2; min-height: 620px; }
+          .r-card.is-tall     { grid-column: span 4; grid-row: span 2; min-height: 620px; }
+          .r-card.is-standard { grid-column: span 4; grid-row: span 1; min-height: 620px; }
+          .r-card.is-wide     { grid-column: span 7; grid-row: span 1; min-height: 420px; }
+          .r-card.is-wide-sm  { grid-column: span 5; grid-row: span 1; min-height: 420px; }
+        }
+
+        .r-card:hover {
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 24px 56px rgba(0, 0, 0, 0.55);
         }
 
         .r-card:focus-visible {
@@ -212,92 +292,115 @@ export function Portfolio() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          filter: saturate(0.92);
+          object-position: top center;
           transform: scale(1);
-          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
-                      filter   500ms cubic-bezier(0.22, 1, 0.36, 1);
+          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
           will-change: transform;
         }
 
         .r-card:hover .r-card-img {
-          transform: scale(1.04);
-          filter: saturate(1);
+          transform: scale(1.06);
         }
 
-        .r-card-overlay {
+        /* Faint index number — top-left */
+        .r-card-index {
           position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 45%);
-          transition: background 500ms cubic-bezier(0.22, 1, 0.36, 1);
+          top: 18px;
+          left: 22px;
+          z-index: 2;
+          font-family: 'Anton', 'Oswald', Impact, sans-serif;
+          font-weight: 400;
+          font-size: 64px;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          color: rgba(255, 255, 255, 0.14);
           pointer-events: none;
+          user-select: none;
         }
-
-        .r-card:hover .r-card-overlay {
-          background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%);
+        @media (min-width: 1024px) {
+          .r-card-index { font-size: 88px; top: 22px; left: 28px; }
+          .r-card.is-hero .r-card-index { font-size: 120px; }
         }
 
         .r-card-meta {
           position: absolute;
-          bottom: 24px;
-          left: 24px;
-          right: 24px;
+          bottom: 26px;
+          left: 28px;
+          right: 28px;
           display: flex;
-          align-items: baseline;
-          gap: 12px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          z-index: 2;
         }
 
-        .r-card-name {
+        .r-card-title {
           font-family: 'Anton', 'Oswald', Impact, sans-serif;
-          font-weight: 400;
+          font-weight: 900;
           text-transform: uppercase;
           font-size: 22px;
           letter-spacing: -0.01em;
           color: var(--text);
           line-height: 1;
-          position: relative;
-          display: inline-block;
+          text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+          transform: translateY(0);
+          transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         @media (min-width: 768px) {
-          .r-card-name { font-size: 28px; }
+          .r-card-title { font-size: 28px; }
+        }
+        @media (min-width: 1024px) {
+          .r-card.is-hero .r-card-title { font-size: 44px; }
+          .r-card.is-tall .r-card-title { font-size: 32px; }
+          .r-card.is-wide .r-card-title { font-size: 36px; }
         }
 
-        .r-card-name::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: -6px;
-          height: 1px;
-          background: var(--accent);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+        .r-card:hover .r-card-title {
+          transform: translateY(-6px);
         }
 
-        .r-card:hover .r-card-name::after {
-          transform: scaleX(1);
-        }
-
-        .r-card-arrow {
+        .r-card-category {
           font-family: 'Inter', sans-serif;
-          font-size: 22px;
-          line-height: 1;
-          color: var(--accent);
-          opacity: 0;
-          transform: translateX(-8px);
-          transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
-                      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+          font-weight: 500;
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #999;
+          line-height: 1.2;
+          transform: translateY(0);
+          transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .r-card:hover .r-card-arrow {
+        .r-card:hover .r-card-category {
+          transform: translateY(-6px);
+        }
+
+        .r-card-cta {
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 11px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #e85d26;
+          line-height: 1;
+          margin-top: 4px;
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1) 60ms,
+                      transform 350ms cubic-bezier(0.22, 1, 0.36, 1) 60ms;
+        }
+
+        .r-card:hover .r-card-cta {
           opacity: 1;
-          transform: translateX(0);
+          transform: translateY(0);
         }
 
         /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
           .r-circle { animation: none !important; }
           .r-card:hover .r-card-img { transform: none; }
+          .r-card:hover .r-card-title,
+          .r-card:hover .r-card-category { transform: none; }
         }
       `}</style>
 
@@ -346,36 +449,38 @@ export function Portfolio() {
         </svg>
       </div>
 
-      {/* ── GRID ───────────────────────────────────────────── */}
+      {/* ── BENTO GRID ─────────────────────────────────────── */}
       <div ref={gridRef} className="r-grid">
-        {projects.map((p) => (
-          <a
-            key={p.name}
-            href={p.url}
-            className="r-card"
-            aria-label={`Voir le projet ${p.name}`}
-            onClick={(e) => {
-              e.preventDefault();
-              window.dispatchEvent(
-                new CustomEvent('devmaroc:navigate', { detail: { url: p.url } })
-              );
-            }}
-          >
-            <div className="r-card-img-wrap">
-              <img
-                src={p.img}
-                alt={`Aperçu du projet ${p.name}`}
-                className="r-card-img"
-                loading="lazy"
-              />
-            </div>
-            <div className="r-card-overlay" />
-            <div className="r-card-meta">
-              <span className="r-card-name display">{p.name}</span>
-              <span className="r-card-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-        ))}
+        {projects.map((p, i) => {
+          const size = sizeAt(i, p.size);
+          return (
+            <a
+              key={`${p.title}-${i}`}
+              href={p.url}
+              className={`r-card is-${size}`}
+              aria-label={`Voir le projet ${p.title}`}
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(
+                  new CustomEvent('devmaroc:navigate', { detail: { url: p.url } })
+                );
+              }}
+            >
+              <div className="r-card-img-wrap">
+                <img
+                  src={p.image}
+                  alt={`Aperçu du projet ${p.title}`}
+                  className="r-card-img"
+                  loading="lazy"
+                />
+              </div>
+              <div className="r-card-meta">
+                <span className="r-card-title display">{p.title}</span>
+                <span className="r-card-cta">VOIR LE PROJET →</span>
+              </div>
+            </a>
+          );
+        })}
       </div>
     </section>
   );
