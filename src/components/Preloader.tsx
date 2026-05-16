@@ -168,15 +168,15 @@ export function Preloader() {
         .preloader-logo {
           font-family: 'Barlow Condensed', 'Anton', Impact, sans-serif;
           font-weight: 900;
-          font-size: 80px;
+          font-size: clamp(32px, 8vw, 80px);
           line-height: 1;
           letter-spacing: -0.02em;
           color: #f5f0e8;
+          white-space: nowrap;
         }
         .preloader-dot { color: #e85d26; }
 
         @media (max-width: 767px) {
-          .preloader-logo { font-size: 56px; }
           .preloader-label { font-size: 10px; margin-bottom: 22px; }
         }
 
