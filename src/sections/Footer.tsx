@@ -9,6 +9,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-16">
           {/* Logo */}
           <div>
+            <img
+              src="/DEVWEB-removebg-preview.png"
+              alt=""
+              className="block mb-4"
+              style={{ width: '88px', height: 'auto' }}
+              draggable={false}
+            />
             <span className="font-display text-white block mb-4" style={{ fontSize: '2rem' }}>DEV-MAROC</span>
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
               © 2026 DEV-MAROC<br />Tous Droits Réservés

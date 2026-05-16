@@ -155,6 +155,15 @@ export function Preloader() {
             transform 0.4s ease-out;
         }
 
+        .preloader-mark {
+          width: clamp(72px, 10vw, 120px);
+          height: auto;
+          display: block;
+          margin-bottom: 24px;
+          user-select: none;
+          -webkit-user-drag: none;
+        }
+
         .preloader-label {
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 11px;
@@ -174,10 +183,19 @@ export function Preloader() {
           color: #f5f0e8;
           white-space: nowrap;
         }
-        .preloader-dot { color: #e85d26; }
+        .preloader-dot {
+          display: inline-block;
+          width: 0.18em;
+          height: 0.18em;
+          background: #e85d26;
+          border-radius: 50%;
+          vertical-align: baseline;
+          margin-left: 0.04em;
+        }
 
         @media (max-width: 767px) {
           .preloader-label { font-size: 10px; margin-bottom: 22px; }
+          .preloader-mark { margin-bottom: 18px; }
         }
 
         .preloader-bar-track {
@@ -217,9 +235,15 @@ export function Preloader() {
       <div className={`preloader-curtain bottom ${curtainsMoved ? 'moved' : ''}`} />
 
       <div className={`preloader-content ${contentVisible ? 'visible' : ''}`}>
+        <img
+          src="/DEVWEB-removebg-preview.png"
+          alt=""
+          className="preloader-mark"
+          draggable={false}
+        />
         <div className="preloader-label">BÂTISSEURS DU DIGITAL</div>
         <div className="preloader-logo">
-          DEV-MAROC<span className="preloader-dot">.</span>
+          DEV-MAROC<span className="preloader-dot" aria-hidden="true" />
         </div>
         <div className="preloader-bar-track">
           <div className="preloader-bar-fill" />

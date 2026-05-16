@@ -1,13 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import emailjs from '@emailjs/browser';
 
 gsap.registerPlugin(ScrollTrigger);
 
+type Status = 'idle' | 'sending' | 'success' | 'error';
+
 export function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [submittedName, setSubmittedName] = useState('');
+  const [status, setStatus] = useState<Status>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const firstName = (submittedName.trim().split(/\s+/)[0] || '').toLowerCase();
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -23,18 +31,151 @@ export function Contact() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => { setFormData({ name: '', email: '', phone: '', message: '' }); setSubmitted(false); }, 3000);
+    if (status === 'sending') return;
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as string | undefined;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string | undefined;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string | undefined;
+
+    if (!serviceId || !templateId || !publicKey || !formRef.current) {
+      setStatus('error');
+      setErrorMsg('Configuration manquante. Veuillez réessayer plus tard.');
+      return;
+    }
+
+    setStatus('sending');
+    setErrorMsg('');
+
+    try {
+      await emailjs.sendForm(serviceId, templateId, formRef.current, { publicKey });
+      setSubmittedName(formData.name);
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(
+        err instanceof Error && err.message
+          ? err.message
+          : "Une erreur est survenue. Veuillez réessayer ou nous contacter directement."
+      );
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
+    if (status === 'error') setStatus('idle');
+  };
+
+  const resetForm = () => {
+    setSubmittedName('');
+    setStatus('idle');
+    setErrorMsg('');
   };
 
   return (
     <section ref={sectionRef} id="contact" className="relative py-20 md:py-32" style={{ backgroundColor: '#111111' }}>
+      <style>{`
+        .contact-success {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 24px;
+          padding: 8px 0;
+          animation: contact-success-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes contact-success-in {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .contact-success-icon {
+          width: 72px;
+          height: 72px;
+          display: block;
+        }
+        .contact-success-icon circle {
+          stroke-dasharray: 240;
+          stroke-dashoffset: 240;
+          animation: contact-success-circle 700ms cubic-bezier(0.22, 1, 0.36, 1) 100ms forwards;
+        }
+        .contact-success-icon path {
+          stroke-dasharray: 60;
+          stroke-dashoffset: 60;
+          animation: contact-success-check 500ms cubic-bezier(0.22, 1, 0.36, 1) 700ms forwards;
+        }
+        @keyframes contact-success-circle {
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes contact-success-check {
+          to { stroke-dashoffset: 0; }
+        }
+
+        .contact-success-title {
+          font-size: clamp(2.5rem, 5vw, 4rem);
+          line-height: 1;
+          font-weight: 400;
+          color: #fff;
+          font-family: Georgia, 'Times New Roman', 'Cormorant Garamond', serif;
+          margin: 0;
+          letter-spacing: -0.01em;
+        }
+        .contact-success-name {
+          font-style: italic;
+          color: #C4591A;
+        }
+
+        .contact-success-body {
+          font-size: 1rem;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.7);
+          max-width: 440px;
+          margin: 0;
+        }
+
+        .contact-success-link {
+          background: transparent;
+          border: 0;
+          padding: 0;
+          margin-top: 8px;
+          font-size: 0.875rem;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #C4591A;
+          cursor: pointer;
+          position: relative;
+          line-height: 1.4;
+        }
+        .contact-success-link::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -4px;
+          height: 1px;
+          background: currentColor;
+          opacity: 0.5;
+          transition: opacity 200ms ease;
+        }
+        .contact-success-link:hover::after {
+          opacity: 1;
+        }
+        .contact-success-link:focus-visible {
+          outline: 2px solid #C4591A;
+          outline-offset: 4px;
+          border-radius: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .contact-success,
+          .contact-success-icon circle,
+          .contact-success-icon path { animation: none; }
+          .contact-success-icon circle { stroke-dashoffset: 0; }
+          .contact-success-icon path { stroke-dashoffset: 0; }
+        }
+      `}</style>
       <div className="container-site">
         {/* Giant title */}
         <div className="contact-title mb-16 md:mb-24 overflow-hidden">
@@ -44,8 +185,52 @@ export function Contact() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* Form */}
-          <form className="contact-form space-y-6" onSubmit={handleSubmit}>
+          {/* Form / Success card */}
+          {status === 'success' ? (
+            <div className="contact-form contact-success" role="status" aria-live="polite">
+              <svg
+                className="contact-success-icon"
+                viewBox="0 0 80 80"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <circle cx="40" cy="40" r="38" fill="none" stroke="#C4591A" strokeWidth="1" />
+                <path
+                  d="M28 41 L37 50 L54 32"
+                  fill="none"
+                  stroke="#C4591A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
+              <h3 className="contact-success-title">
+                Merci{firstName ? ',' : ''}
+                {firstName && (
+                  <>
+                    {' '}
+                    <span className="contact-success-name">{firstName}</span>
+                  </>
+                )}
+                .
+              </h3>
+
+              <p className="contact-success-body">
+                Votre demande a bien été reçue. Un membre de l'équipe DEV-MAROC
+                vous contactera dans les prochaines vingt-quatre heures.
+              </p>
+
+              <button
+                type="button"
+                onClick={resetForm}
+                className="contact-success-link"
+              >
+                ENVOYER UNE AUTRE DEMANDE
+              </button>
+            </div>
+          ) : (
+          <form ref={formRef} className="contact-form space-y-6" onSubmit={handleSubmit} noValidate>
             <div>
               <label className="text-label block mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>Votre nom *</label>
               <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input-masolide" placeholder="Ex: Jean Dupont" />
@@ -62,15 +247,24 @@ export function Contact() {
               <label className="text-label block mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>Votre message *</label>
               <textarea name="message" value={formData.message} onChange={handleChange} required rows={5} className="input-masolide resize-none" placeholder="Bonjour, j'aimerais discuter de la création d'un site web pour mon entreprise..." />
             </div>
-            <button
-              type="submit"
-              disabled={submitted}
-              className="px-8 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#C4591A', color: '#fff' }}
-            >
-              {submitted ? 'MESSAGE ENVOYÉ ✓' : 'CLIQUEZ-ICI'}
-            </button>
+            <div className="flex flex-col gap-3">
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="px-8 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed self-start"
+                style={{ backgroundColor: '#C4591A', color: '#fff' }}
+              >
+                {status === 'sending' ? 'ENVOI EN COURS...' : 'CLIQUEZ-ICI'}
+              </button>
+
+              {status === 'error' && (
+                <p className="text-sm" style={{ color: '#ff8170' }}>
+                  {errorMsg}
+                </p>
+              )}
+            </div>
           </form>
+          )}
 
           {/* Contact info */}
           <div className="contact-info">
