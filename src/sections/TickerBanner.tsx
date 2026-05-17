@@ -26,13 +26,16 @@ export function TickerBanner() {
 
   const bar = (
     <div
-      className="overflow-hidden py-2.5 border-b"
+      className="overflow-hidden py-2.5 border-b no-reveal"
       style={{ backgroundColor: '#0e0e0e', borderColor: 'rgba(255,255,255,0.08)' }}
     >
       <div className="flex animate-ticker whitespace-nowrap">
         {[...items, ...items].map((item, i) => (
           <span key={i} className="flex items-center gap-3 mx-6 shrink-0">
-            <span className="text-xs font-bold tracking-widest" style={{ color: '#C4591A' }}>
+            <span
+              className="text-xs font-bold tracking-widest"
+              style={{ color: '#e85d26' }}
+            >
               {item.label}
             </span>
             <span className="text-xs font-medium tracking-widest text-white">
@@ -40,7 +43,7 @@ export function TickerBanner() {
             </span>
             <span
               className="text-xs px-2 py-0.5 rounded font-mono font-semibold text-white"
-              style={{ backgroundColor: '#C4591A' }}
+              style={{ backgroundColor: '#e85d26' }}
             >
               {time}
             </span>
