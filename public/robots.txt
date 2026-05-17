@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block crawler waste on common build/private paths
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://dev-maroc.com/sitemap.xml

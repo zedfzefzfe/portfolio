@@ -1,6 +1,12 @@
 export function Hero() {
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
+      {/* SEO — single, keyword-rich h1 for search engines and screen readers.
+          Visually hidden so the hero's editorial layout remains untouched. */}
+      <h1 className="sr-only">
+        Agence Web au Maroc — DEV-MAROC | Création de Sites Internet, SEO &amp; Publicité Digitale
+      </h1>
+
       {/* Background video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -43,18 +49,18 @@ export function Hero() {
 
       {/* Foreground content wrapper */}
       <div className="relative h-full w-full">
-        {/* Headline words */}
-        <h1 className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] left-4 md:left-10 top-[18%]">
+        {/* Headline words (decorative — real H1 is sr-only above for SEO) */}
+        <span className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] left-4 md:left-10 top-[18%]" aria-hidden="true">
           protect
-        </h1>
+        </span>
 
-        <h1 className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] right-4 md:right-10 top-[38%]">
+        <span className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] right-4 md:right-10 top-[38%]" aria-hidden="true">
           your
-        </h1>
+        </span>
 
-        <h1 className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] left-[18%] md:left-[28%] top-[58%]">
+        <span className="hero-title absolute text-white font-medium text-[14vw] md:text-[13vw] left-[18%] md:left-[28%] top-[58%]" aria-hidden="true">
           data
-        </h1>
+        </span>
 
         {/* Description paragraph */}
         <p className="absolute left-6 md:left-10 top-[46%] max-w-[240px] text-[15px] leading-snug text-white/90">
